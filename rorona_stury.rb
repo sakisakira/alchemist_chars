@@ -9,17 +9,65 @@
 $t=0
 $x=96
 $y=24
+$tic=0
+
+$lx=$x
+$ly=$y
+
+FR0_Id=260
+FR1_Id=356
+FRW0_Id=256
+FRW1_Id=352
+RT0_Id=268
+RTW0_Id=360
+RTW1_Id=364
 
 def TIC
 	$y-=1 if btn 0
 	$y+=1 if btn 1
 	$x-=1 if btn 2
 	$x+=1 if btn 3
+	
+	flip=0
+	sp_id=if ($t%30)<15 then
+	    FR0_Id
+			else
+			  FR1_Id
+			end
+	
+	if $y!=$ly then
+	  if $t%16<4 then
+			  sp_id=FR0_Id
+			elsif $t%16<8 then
+			  sp_id=FRW0_Id
+			elsif $t%16<12
+			  sp_id=FR0_Id
+			else
+			  sp_id=FRW1_Id
+			end
+	end
+	
+	if $x!=$lx then
+		 if $t%16<4 then
+			  sp_id=RT0_Id
+			elsif $t%16<8 then
+			  sp_id=RTW0_Id
+			elsif $t%16<12
+			  sp_id=RT0_Id
+			else
+			  sp_id=RTW1_Id
+			end
+			flip=1 if $x>$lx
+	end
 
 	cls 13
-	spr 1+(($t%60)/30|0)*2,$x,$y,14,3,0,0,2,2
-	print "HELLO WORLD!",84,84
+	spr(sp_id, $x, $y, 0, 1, flip, 0, 4, 6)
+
+ text="Call me RORONA!"
+	print(text,85,85,15)
+	print(text,84,84,3)
 	$t+=1
+	$lx=$x; $ly=$y
 end
 
 # <TILES>
