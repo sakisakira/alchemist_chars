@@ -1,24 +1,25 @@
 # title:   Hello Rororina
-# author:  sakisakira@gmail.com
+# author:  sasakiki
 # desc:    walking alchemist
 # site:    website link
 # license: MIT License (change this to your license of choice)
-# input: gamepad
 # saveid: Rorolina
-# version: 0.2
+# version: 0.3
 # script:  ruby
 
 Screen=[240,136]
 Sprite=[32,48]
 
 $t=0
-$x=96
-$y=24
+$x=(Screen[0]-Sprite[0])/2
+$y=(Screen[1]-Sprite[1])/2
 $tic=0
 
 $lx=$x
 $ly=$y
 $front=true
+$tx=nil
+$ty=nil
 
 # Bank:0
 FR0_Id=260
@@ -36,14 +37,34 @@ BKW0_Id = 260
 BKW1_Id = 356
 
 def TIC
-	$y-=1 if btn 0
-	$y+=1 if btn 1
-	$x-=1 if btn 2
-	$x+=1 if btn 3
+ m=mouse()
+ if m[:left] then
+  $tx=m[:x]-Sprite[0]/2
+  $ty=m[:y]-Sprite[1]/2
+ end 
 
-    margin=5
-    $x=[[$x,margin].max,Screen[0]-Sprite[0]-margin].min
-    $y=[[$y,margin].max,Screen[1]-Sprite[1]-margin].min
+ $y-=1 if btn 0
+ $y+=1 if btn 1
+ $x-=1 if btn 2
+ $x+=1 if btn 3
+
+ if $tx and $ty then
+  if $tx!=$x then
+   dx=$tx-$x
+   dx/=dx.abs
+   $x+=dx
+  elsif $ty!=$y then
+   dy=$ty-$y
+   dy/=dy.abs
+   $y+=dy
+  else
+   $tx=$ty=nil
+  end
+ end
+
+ margin=5
+ $x=[[$x,margin].max,Screen[0]-Sprite[0]-margin].min
+ $y=[[$y,margin].max,Screen[1]-Sprite[1]-margin].min
     
 	flip=0
 	if ($t%30)<15 then
