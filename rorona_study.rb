@@ -1,10 +1,15 @@
 # title:   Hello Rororina
 # author:  sakisakira@gmail.com
-# desc:    short description
+# desc:    walking alchemist
 # site:    website link
 # license: MIT License (change this to your license of choice)
-# version: 0.1
+# input: gamepad
+# saveid: Rorolina
+# version: 0.2
 # script:  ruby
+
+Screen=[240,136]
+Sprite=[32,48]
 
 $t=0
 $x=96
@@ -13,7 +18,9 @@ $tic=0
 
 $lx=$x
 $ly=$y
+$front=true
 
+# Bank:0
 FR0_Id=260
 FR1_Id=356
 FRW0_Id=256
@@ -22,52 +29,84 @@ RT0_Id=268
 RTW0_Id=360
 RTW1_Id=364
 
+# Bank:1
+BK0_Id = 256
+BK1_Id = 352
+BKW0_Id = 260
+BKW1_Id = 356
+
 def TIC
 	$y-=1 if btn 0
 	$y+=1 if btn 1
 	$x-=1 if btn 2
 	$x+=1 if btn 3
-	
+
+    margin=5
+    $x=[[$x,margin].max,Screen[0]-Sprite[0]-margin].min
+    $y=[[$y,margin].max,Screen[1]-Sprite[1]-margin].min
+    
 	flip=0
-	sp_id=if ($t%30)<15 then
-	    FR0_Id
-			else
-			  FR1_Id
-			end
+	if ($t%30)<15 then
+     if $front then
+      sp_id=FR0_Id
+     else
+      sp_id=BK0_Id
+     end
+	else
+     if $front then
+	  sp_id=FR1_Id
+     else
+      sp_id=BK1_Id
+     end
+	end
 	
 	if $y!=$ly then
-	  if $t%16<4 then
-			  sp_id=FR0_Id
-			elsif $t%16<8 then
-			  sp_id=FRW0_Id
-			elsif $t%16<12
-			  sp_id=FR0_Id
-			else
-			  sp_id=FRW1_Id
-			end
+	 if $t%16<4 then
+	  sp_id=FR0_Id
+	 elsif $t%16<8 then
+	  sp_id=FRW0_Id
+	 elsif $t%16<12
+	  sp_id=FR0_Id
+	 else
+	  sp_id=FRW1_Id
+	 end
 	end
-	
+
 	if $x!=$lx then
-		 if $t%16<4 then
-			  sp_id=RT0_Id
-			elsif $t%16<8 then
-			  sp_id=RTW0_Id
-			elsif $t%16<12
-			  sp_id=RT0_Id
-			else
-			  sp_id=RTW1_Id
-			end
-			flip=1 if $x>$lx
+	 if $t%16<4 then
+	  sp_id=RT0_Id
+	 elsif $t%16<8 then
+	  sp_id=RTW0_Id
+	 elsif $t%16<12
+	  sp_id=RT0_Id 
+	 else
+	  sp_id=RTW1_Id
+	 end
+	 flip=1 if $x>$lx
 	end
 
-	cls 13
-	spr(sp_id, $x, $y, 0, 1, flip, 0, 4, 6)
+ if $y>$ly then
+   $front=true
+ elsif $y<$ly then
+   $front=false
+ elsif $x!=$lx then
+   $front=true
+ end
+    
+ if $front then
+   sync(2,0)
+ else
+   sync(2,1)
+ end
 
- text="Call me RORONA!"
-	print(text,85,85,15)
-	print(text,84,84,3)
-	$t+=1
-	$lx=$x; $ly=$y
+ cls 13
+ spr(sp_id, $x, $y, 0, 1, flip, 0, 4, 6)
+
+ text="Rorona dayo-!"
+ print(text,$x-20,$y+51,15)
+ print(text,$x-20,$y+50,3)
+ $t+=1
+ $lx=$x; $ly=$y
 end
 
 # <TILES>
