@@ -1,5 +1,5 @@
 # title:   Hello Rororina
-# author:  sasakiki
+# author:  sasakikisasakiki09@gmail.com
 # desc:    walking alchemist
 # site:    website link
 # license: MIT License (change this to your license of choice)
@@ -9,6 +9,7 @@
 
 Screen=[240,136]
 Sprite=[32,48]
+ArmSprite=[16,16]
 
 $t=0
 $x=(Screen[0]-Sprite[0])/2
@@ -31,10 +32,12 @@ RTW0_Id=360
 RTW1_Id=364
 
 # Bank:1
-BK0_Id = 256
-BK1_Id = 352
-BKW0_Id = 260
-BKW1_Id = 356
+BK0_Id=256
+BK1_Id=352
+BKW0_Id=260
+BKW1_Id=356
+Cooker_Id=264
+Arm0_Id=448
 
 def TIC
  m=mouse()
