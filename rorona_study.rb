@@ -4,7 +4,7 @@
 # site:    website link
 # license: MIT License (change this to your license of choice)
 # saveid: Rorolina
-# version: 0.3
+# version: 0.4
 # script:  ruby
 
 Screen=[240,136]
