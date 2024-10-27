@@ -39,12 +39,17 @@ BKW1_Id=356
 Cooker_Id=264
 Arm0_Id=448
 
-def TIC
+ArmCount=5
+
+def disp_mixing
+end
+
+def disp_walking
  m=mouse()
  if m[:left] then
   $tx=m[:x]-Sprite[0]/2
   $ty=m[:y]-Sprite[1]/2
- end 
+ end
 
  $y-=1 if btn 0
  $y+=1 if btn 1
@@ -68,46 +73,46 @@ def TIC
  margin=5
  $x=[[$x,margin].max,Screen[0]-Sprite[0]-margin].min
  $y=[[$y,margin].max,Screen[1]-Sprite[1]-margin].min
-    
-	flip=0
-	if ($t%30)<15 then
+
+ flip=0
+ if ($t%30)<15 then
      if $front then
       sp_id=FR0_Id
      else
       sp_id=BK0_Id
      end
-	else
-     if $front then
-	  sp_id=FR1_Id
-     else
-      sp_id=BK1_Id
-     end
-	end
-	
-	if $y!=$ly then
-	 if $t%16<4 then
-	  sp_id=FR0_Id
-	 elsif $t%16<8 then
-	  sp_id=FRW0_Id
-	 elsif $t%16<12
-	  sp_id=FR0_Id
-	 else
-	  sp_id=FRW1_Id
-	 end
-	end
+ else
+  if $front then
+   sp_id=FR1_Id
+  else
+   sp_id=BK1_Id
+  end
+ end
 
-	if $x!=$lx then
-	 if $t%16<4 then
-	  sp_id=RT0_Id
-	 elsif $t%16<8 then
-	  sp_id=RTW0_Id
-	 elsif $t%16<12
-	  sp_id=RT0_Id 
-	 else
-	  sp_id=RTW1_Id
-	 end
-	 flip=1 if $x>$lx
-	end
+ if $y!=$ly then
+  if $t%16<4 then
+   sp_id=FR0_Id
+  elsif $t%16<8 then
+   sp_id=FRW0_Id
+  elsif $t%16<12
+   sp_id=FR0_Id
+  else
+   sp_id=FRW1_Id
+  end
+ end
+
+ if $x!=$lx then
+  if $t%16<4 then
+   sp_id=RT0_Id
+  elsif $t%16<8 then
+   sp_id=RTW0_Id
+  elsif $t%16<12
+   sp_id=RT0_Id
+  else
+   sp_id=RTW1_Id
+  end
+  flip=1 if $x>$lx
+ end
 
  if $y>$ly then
    $front=true
@@ -116,7 +121,7 @@ def TIC
  elsif $x!=$lx then
    $front=true
  end
-    
+
  if $front then
    sync(2,0)
  else
@@ -129,8 +134,12 @@ def TIC
  text="Rorona dayo-!"
  print(text,$x-20,$y+51,15)
  print(text,$x-20,$y+50,3)
- $t+=1
  $lx=$x; $ly=$y
+end
+
+def TIC
+ disp_walking
+ $t+=1
 end
 
 # <TILES>
