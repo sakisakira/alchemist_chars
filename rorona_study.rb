@@ -11,6 +11,11 @@ Screen=[240,136]
 Sprite=[32,48]
 ArmSprite=[16,16]
 
+module Mode
+  Walk=0
+  Mix=1
+end
+
 $t=0
 $x=(Screen[0]-Sprite[0])/2
 $y=(Screen[1]-Sprite[1])/2
@@ -19,8 +24,11 @@ $tic=0
 $lx=$x
 $ly=$y
 $front=true
+$back_start=0
 $tx=nil
 $ty=nil
+
+$mode=Mode::Walk
 
 # Bank:0
 FR0_Id=260
@@ -42,11 +50,14 @@ Arm0_Id=448
 ArmCount=5
 
 def movement
-  m=mouse()
- if m[:left] then
-  $tx=m[:x]-Sprite[0]/2
-  $ty=m[:y]-Sprite[1]/2
- end
+  m=mouse
+  btn_y_border=Screen[1]-10
+  if m[:left] then
+    if m[:y]<btn_y_border then
+      $tx=m[:x]-Sprite[0]/2
+      $ty=m[:y]-Sprite[1]/2
+    end
+  end
 
  $y-=1 if btn 0
  $y+=1 if btn 1
@@ -72,20 +83,37 @@ def movement
  $y=[[$y,margin].max,Screen[1]-Sprite[1]-margin].min
 end
 
-def disp_mixing
-  period=99
-  t=$t%period
-  idx_count=ArmCount*2-1
-  idx=t/(period/idx_count)
-  if idx>=ArmCount then
-    idx=idx_count-1-idx
+def button(x,y,txt)
+  w=print(txt,0,-6)+4
+  h=6+4
+  rect(x,y,w,h,3)
+  print(txt,x+2,y+2,15)
+  m=mouse
+  pressed=false
+  if m[:left] then
+    mx=m[:x]; my=m[:y]
+    pressed=(x<=mx && mx<x+w && y<=my && my<y+h)
   end
-  sp_id=Arm0_Id+2*idx
+  pressed
+end
 
-  sync(2,1)
-  cls(13)
-  spr(Cooker_Id, $x, $y, 0, 1, 0, 0, 4, 6)
-  spr(sp_id, $x+8, $y+24, 0, 1, 0, 0, 2, 2)
+def disp_mixing
+ period=99
+ t=$t%period
+ idx_count=ArmCount*2-1
+ idx=t/(period/idx_count)
+ if idx>=ArmCount then
+   idx=idx_count-1-idx
+ end
+ sp_id=Arm0_Id+2*idx
+
+ sync(2,1)
+ spr(Cooker_Id, $x, $y, 0, 1, 0, 0, 4, 6)
+ spr(sp_id, $x+8, $y+24, 0, 1, 0, 0, 2, 2)
+
+ text="Gu-ru Gu-ru!"
+ print(text,$x-15,$y+51,15)
+ print(text,$x-15,$y+50,3)
 end
 
 def disp_walking
@@ -133,7 +161,12 @@ def disp_walking
    $front=true
  elsif $y<$ly then
    $front=false
+   $back_start=$t
  elsif $x!=$lx then
+   $front=true
+ end
+
+ if !$front && $back_start+90<$t then
    $front=true
  end
 
@@ -143,7 +176,6 @@ def disp_walking
    sync(2,1)
  end
 
- cls(13)
  spr(sp_id, $x, $y, 0, 1, flip, 0, 4, 6)
 
  text="Rorona dayo-!"
@@ -153,10 +185,19 @@ def disp_walking
 end
 
 def TIC
- movement
- # disp_walking
- disp_mixing
- $t+=1
+  cls(13)
+  if button(5,Screen[1]-10,"walk") then
+    $mode=Mode::Walk
+  elsif  button(35,Screen[1]-10,"mix") then
+    $mode=Mode::Mix
+  end
+  if $mode==Mode::Walk then
+    movement
+    disp_walking
+  elsif $mode=Mode::Mix then
+    disp_mixing
+  end
+  $t+=1
 end
 
 # <TILES>
