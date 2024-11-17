@@ -27,6 +27,8 @@ $back_start=0
 $tx=nil
 $ty=nil
 
+$mix_tic=0
+
 $mode=Mode::Walk
 
 # Bank:0
@@ -47,6 +49,14 @@ Cooker_Id=264
 Arm0_Id=448
 
 ArmCount=5
+
+def update_mode
+  if btn(6) then
+    $mode=Mode::Walk
+  elsif btn(7) then
+    $mode=Mode::Mix
+  end
+end
 
 def movement
   m=mouse
@@ -97,22 +107,25 @@ def button(x,y,txt)
 end
 
 def disp_mixing
- period=99
- t=$tic%period
- idx_count=ArmCount*2-1
- idx=t/(period/idx_count)
- if idx>=ArmCount then
-   idx=idx_count-1-idx
- end
- sp_id=Arm0_Id+2*idx
+  period=99
+  if btn(4) then
+    $mix_tic=($mix_tic+1)%period
+  end
+  t=$mix_tic%period
+  idx_count=ArmCount*2-1
+  idx=t/(period/idx_count)
+  if idx>=ArmCount then
+    idx=idx_count-1-idx
+  end
+  sp_id=Arm0_Id+2*idx
 
- sync(2,1)
- spr(Cooker_Id, $x, $y, 0, 1, 0, 0, 4, 6)
- spr(sp_id, $x+8, $y+24, 0, 1, 0, 0, 2, 2)
+  sync(2,1)
+  spr(Cooker_Id, $x, $y, 0, 1, 0, 0, 4, 6)
+  spr(sp_id, $x+8, $y+24, 0, 1, 0, 0, 2, 2)
 
- text="Gu-ru Gu-ru!"
- print(text,$x-15,$y+51,15)
- print(text,$x-15,$y+50,3)
+  text="Gu-ru Gu-ru!"
+  print(text,$x-15,$y+51,15)
+  print(text,$x-15,$y+50,3)
 end
 
 def disp_walking
@@ -185,6 +198,7 @@ end
 
 def TIC
   cls(14)
+  update_mode
   if button(5,Screen[1]-10,"walk") then
     $mode=Mode::Walk
   elsif button(35,Screen[1]-10,"mix") then
