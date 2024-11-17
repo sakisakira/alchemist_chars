@@ -16,7 +16,6 @@ module Mode
   Mix=1
 end
 
-$t=0
 $x=(Screen[0]-Sprite[0])/2
 $y=(Screen[1]-Sprite[1])/2
 $tic=0
@@ -99,7 +98,7 @@ end
 
 def disp_mixing
  period=99
- t=$t%period
+ t=$tic%period
  idx_count=ArmCount*2-1
  idx=t/(period/idx_count)
  if idx>=ArmCount then
@@ -118,7 +117,7 @@ end
 
 def disp_walking
  flip=0
- if ($t%30)<15 then
+ if ($tic%30)<15 then
      if $front then
       sp_id=FR0_Id
      else
@@ -133,11 +132,11 @@ def disp_walking
  end
 
  if $y!=$ly then
-  if $t%16<4 then
+  if $tic%16<4 then
    sp_id=FR0_Id
-  elsif $t%16<8 then
+  elsif $tic%16<8 then
    sp_id=FRW0_Id
-  elsif $t%16<12
+  elsif $tic%16<12
    sp_id=FR0_Id
   else
    sp_id=FRW1_Id
@@ -145,11 +144,11 @@ def disp_walking
  end
 
  if $x!=$lx then
-  if $t%16<4 then
+  if $tic%16<4 then
    sp_id=RT0_Id
-  elsif $t%16<8 then
+  elsif $tic%16<8 then
    sp_id=RTW0_Id
-  elsif $t%16<12
+  elsif $tic%16<12
    sp_id=RT0_Id
   else
    sp_id=RTW1_Id
@@ -161,12 +160,12 @@ def disp_walking
    $front=true
  elsif $y<$ly then
    $front=false
-   $back_start=$t
+   $back_start=$tic
  elsif $x!=$lx then
    $front=true
  end
 
- if !$front && $back_start+90<$t then
+ if !$front && $back_start+90<$tic then
    $front=true
  end
 
@@ -185,10 +184,10 @@ def disp_walking
 end
 
 def TIC
-  cls(13)
+  cls(14)
   if button(5,Screen[1]-10,"walk") then
     $mode=Mode::Walk
-  elsif  button(35,Screen[1]-10,"mix") then
+  elsif button(35,Screen[1]-10,"mix") then
     $mode=Mode::Mix
   end
   if $mode==Mode::Walk then
@@ -197,7 +196,7 @@ def TIC
   elsif $mode=Mode::Mix then
     disp_mixing
   end
-  $t+=1
+  $tic+=1
 end
 
 # <TILES>
@@ -673,7 +672,7 @@ end
 # </PALETTE>
 
 # <PALETTE1>
-# 000:1a1c2c5d275db16953faa5a5ffde99ceae7d38b76425717929366f3b5dc941a6f673eff7f4f4f494b0c2566c86333c57
+# 000:1a1c2c5d275db16953faa5a5ffde99ceae7d38b76425717929366f3b5dc941a6f673eff7f4f4f494b0c2ffdeba333c57
 # </PALETTE1>
 
 # <PALETTE2>
